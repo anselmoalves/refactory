@@ -35,28 +35,11 @@ class PerformanceCalculator {
   }
 
   get amount() {
-    let result = 0;
-    switch (this.play.type) {
-      case "tragedy":
-        throw 'bad thing';
-      case "comedy":
-        result = 30000;
-        if (this.performance.audience > 20) {
-          result += 10000 + 500 * (this.performance.audience - 20);
-        }
-        result += 300 * this.performance.audience;
-        break;
-      default:
-        throw new Error(`unknown type: ${this.play.type}`);
-    }
-    return result;
+    throw new Error('subclass responsibility');
   }
 
   get volumeCredits() {
-    let result = 0;
-    result += Math.max(this.performance.audience - 30, 0);
-    if ("comedy" === this.play.type) result += Math.floor(this.performance.audience / 5);
-    return result;
+    return Math.max(this.performance.audience - 30, 0);
   }
 }
 
@@ -82,4 +65,16 @@ class TragedyCalculator extends PerformanceCalculator {
 }
 
 class ComedyCalculator extends PerformanceCalculator {
+  get amount() {
+    let result = 30000;
+    if (this.performance.audience > 20) {
+      result += 10000 + 500 * (this.performance.audience - 20);
+    }
+    result += 300 * this.performance.audience;
+    return result;
+  }
+
+  get volumeCredits() {
+    return super.volumeCredits + Math.floor(this.performance.audience / 5);
+  }
 }
